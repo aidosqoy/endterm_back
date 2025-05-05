@@ -1,6 +1,5 @@
 import uuid
 from flask import Blueprint, render_template, redirect, url_for, flash, request
-
 from app import db
 from app.models import Student
 from app.forms import StudentForm
@@ -97,7 +96,7 @@ def edit_student(id):
             filename = secure_filename(form.image.data.filename)
             filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             form.image.data.save(filepath)
-            student.image = filename if filename else '2.png'
+            student.image = filename
 
         db.session.commit()
         flash('Student updated successfully', 'success')

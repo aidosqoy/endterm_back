@@ -32,7 +32,7 @@ def admin_dashboard():
 def edit_user(user_id):
     if not getattr(current_user, 'is_admin', False):
         flash('Access denied.', 'danger')
-        return redirect(url_for('main.index'))  # ← возможно, это тоже редиректит обратно к edit
+        return redirect(url_for('main.index'))
 
     user = User.query.get_or_404(user_id)
     form = EditUserForm(obj=user)

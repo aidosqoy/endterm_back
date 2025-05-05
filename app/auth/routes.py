@@ -6,7 +6,6 @@ from flask_login import login_user, logout_user, login_required
 
 auth = Blueprint('auth', __name__)
 
-
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -29,8 +28,8 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and user.check_password(form.password.data):
+            session.permanent = form.remember.data
             login_user(user, remember=form.remember.data)
-            session.permanent = True
             flash('Logged in successfully!', 'success')
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
