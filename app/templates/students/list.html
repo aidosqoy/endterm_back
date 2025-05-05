@@ -38,7 +38,7 @@
                         <td>{{ student.course }}</td>
                         <td>
                             {% if student.image %}
-                                <img src="{{ url_for('static', filename='uploads/' + (student.image or 'default.jpg')) }}" alt="Student Image" width="50">
+                                <img src="{{ url_for('static', filename='uploads/' + (student.image or 'default.jpg')) }}" alt="Student Image" width="50" height="55">
                             {% else %}
                                 No Photo
                             {% endif %}
@@ -71,6 +71,6 @@
             </ul>
         </nav>
     {% else %}
-        <p>No students found.</p>
+        <div>No students found(</div>
     {% endif %}
 {% endblock %}

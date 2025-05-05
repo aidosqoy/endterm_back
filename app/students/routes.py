@@ -121,6 +121,10 @@ def delete_student(id):
     return redirect(url_for('students.list_students'))
 
 
+
+
+
+
 @students.route('/students/search')
 def search_students():
     query = request.args.get('q')

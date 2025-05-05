@@ -23,7 +23,7 @@ def admin_dashboard():
             (User.email.ilike(f'%{search_query}%'))
         )
 
-    users = query.order_by(User.id).paginate(page=page, per_page=10)
+    users = query.order_by(User.id).paginate(page=page, per_page=5)
 
     return render_template('admin/dashboard.html', users=users, search_query=search_query)
 
@@ -42,7 +42,7 @@ def edit_user(user_id):
         user.email = form.email.data
         user.is_admin = form.is_admin.data
         db.session.commit()
-        flash('Пользователь обновлён.', 'success')
+        flash('User Updated', 'success')
         return redirect(url_for('admin.admin_dashboard'))
 
     return render_template('admin/edit_user.html', form=form)
@@ -63,6 +63,6 @@ def delete_user(user_id):
 
     db.session.delete(user)
     db.session.commit()
-    flash(f'User {user.name} deleted.', 'success')
+    flash(f'User {user.name} deleted', 'success')
     return redirect(url_for('admin.admin_dashboard'))
 
