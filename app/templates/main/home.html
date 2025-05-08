@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="text-center">
+    <h1>Hello, {{ current_user.name }}!</h1>
+    <p class="lead">Welcome back to the Student Management System.</p>
+    <a href="{{ url_for('students.list_students') }}" class="btn btn-primary">Manage Students</a>
+</div>
+{% endblock %}
