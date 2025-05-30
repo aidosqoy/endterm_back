@@ -20,7 +20,7 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\User\Documents\Back End Uni\endterm\instance\students.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:C:\Users\User\Documents\Back End Uni\final\instance\students.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>

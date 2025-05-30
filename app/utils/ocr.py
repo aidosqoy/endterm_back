@@ -16,7 +16,7 @@ def process_pdf_file(file, user_id):
 
     images = convert_from_bytes(file.read(), dpi=300)
     if not images:
-        raise ValueError("PDF файл пуст или не может быть конвертирован в изображение")
+        raise ValueError("PDF file is empty or can not be converted to image")
     image = images[0]
 
     text = pytesseract.image_to_string(image, lang='kaz+eng')
