@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Edit User</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-group mb-3">
-            {{ form.name.label(class="form-label") }}
-            {{ form.name(class="form-control", placeholder="Name") }}
-        </div>
-        <div class="form-group mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control", placeholder="Email") }}
-        </div>
-        <div class="form-check mb-3">
-            {{ form.is_admin(class="form-check-input") }}
-            {{ form.is_admin.label(class="form-check-label") }}
-        </div>
-        <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
-        <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
+    <div class="container mt-5">
+        <h2 class="mb-4">Edit User</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group mb-3">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control", placeholder="Name") }}
+            </div>
+            <div class="form-group mb-3">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", placeholder="Email") }}
+                {% for error in form.email.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-check mb-3">
+                {{ form.is_admin(class="form-check-input") }}
+                {{ form.is_admin.label(class="form-check-label") }}
+            </div>
+            <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+            <a href="{{ url_for('admin.admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
 {% endblock %}

@@ -35,7 +35,7 @@ def edit_user(user_id):
         return redirect(url_for('main.index'))
 
     user = User.query.get_or_404(user_id)
-    form = EditUserForm(obj=user)
+    form = EditUserForm(original_email=user.email, obj=user)
 
     if form.validate_on_submit():
         user.name = form.name.data

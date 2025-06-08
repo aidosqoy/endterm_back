@@ -16,7 +16,7 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'secret_key'
+    app.config['SECRET_KEY'] = 'CJnjhuaio8cmoai4usba2klw'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/students.db'
     app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)

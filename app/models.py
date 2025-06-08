@@ -24,8 +24,10 @@ class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
-    course = db.Column(db.String(100), nullable=False)
+    patronymic = db.Column(db.String(100), nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    course = db.Column(db.String(100), nullable=False)
+    profession = db.Column(db.String(100), nullable=True)
     image = db.Column(db.String(100), nullable=True, default='default.jpg')
     created_at = db.Column(db.DateTime, default=datetime.utcnow())
 

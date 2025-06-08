@@ -1,52 +1,79 @@
 {% extends "base.html" %}
-
 {% block title %}{{ title }}{% endblock %}
-
 {% block content %}
-<h2>Add Student</h2>
-<form method="POST" enctype="multipart/form-data">
-    {{ form.hidden_tag() }}
+    <h2>Add Student</h2>
 
-    <div class="mb-3">
-        {{ form.first_name.label(class="form-label") }}
-        {{ form.first_name(class="form-control") }}
-        {% for error in form.first_name.errors %}
-            <div class="text-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
+    {% if prefill_mode %}
+        <div class="alert alert-info">
+            The data was automatically extracted from the PDF. Check and supplement if necessary!
+        </div>
+    {% endif %}
 
-    <div class="mb-3">
-        {{ form.last_name.label(class="form-label") }}
-        {{ form.last_name(class="form-control") }}
-        {% for error in form.last_name.errors %}
-            <div class="text-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
+    <form method="POST" action="{{ url_for('students.add_student') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
 
-    <div class="mb-3">
-        {{ form.email.label(class="form-label") }}
-        {{ form.email(class="form-control") }}
-        {% for error in form.email.errors %}
-            <div class="text-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
+        {% if extracted_image_filename %}
+            <input type="hidden" name="extracted_image" value="{{ extracted_image_filename }}">
+        {% endif %}
 
-    <div class="mb-3">
-        {{ form.course.label(class="form-label") }}
-        {{ form.course(class="form-control") }}
-        {% for error in form.course.errors %}
-            <div class="text-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
+        <div class="mb-3">
+            {{ form.first_name.label(class="form-label") }}
+            {{ form.first_name(class="form-control") }}
+        </div>
 
-    <div class="mb-3">
-        {{ form.image.label(class="form-label") }}
-        {{ form.image(class="form-control") }}
-        {% for error in form.image.errors %}
-            <div class="text-danger">{{ error }}</div>
-        {% endfor %}
-    </div>
+        <div class="mb-3">
+            {{ form.last_name.label(class="form-label") }}
+            {{ form.last_name(class="form-control") }}
+        </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+        <div class="mb-3">
+            {{ form.patronymic.label(class="form-label") }}
+            {{ form.patronymic(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+            {% for error in form.email.errors %}
+                <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div class="mb-3">
+            {{ form.course.label(class="form-label") }}
+            {{ form.course(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.profession.label(class="form-label") }}
+            {{ form.profession(class="form-control") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.image.label(class="form-label") }}
+            {{ form.image(class="form-control") }}
+        </div>
+
+        {% if avatar_preview %}
+            <div class="mb-3">
+                <label class="form-label">Extracted photo:</label><br>
+                <img src="{{ url_for('static', filename='uploads/' + avatar_preview) }}" alt="avatar" width="120"
+                     style="border-radius: 6px;">
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary mb-4">Save</button>
+    </form>
+
+    <hr>
+    <p class="text-center text-muted">OR</p>
+
+    <form method="POST" action="{{ url_for('students.upload_pdf') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            <label for="pdf_file" class="form-label">Upload a PDF file with student data</label>
+            <input type="file" name="pdf_file" id="pdf_file" class="form-control" accept=".pdf" required>
+        </div>
+        <button type="submit" class="btn btn-secondary mb-5">Recognize from PDF</button>
+    </form>
 {% endblock %}

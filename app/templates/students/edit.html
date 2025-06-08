@@ -1,31 +1,60 @@
 {% extends "base.html" %}
 
+{% block title %}Edit Student{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h2 class="my-4">Edit Student</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.first_name.label(class="form-label") }}
-            {{ form.first_name(class="form-control", placeholder="Name") }}
-        </div>
-        <div class="form-group">
-            {{ form.last_name.label(class="form-label") }}
-            {{ form.last_name(class="form-control", placeholder="Surname") }}
-        </div>
-        <div class="form-group">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control", placeholder="Email") }}
-        </div>
-        <div class="form-group">
-            {{ form.course.label(class="form-label") }}
-            {{ form.course(class="form-control", placeholder="Course") }}
-        </div>
-        <div class="form-group">
-            {{ form.image.label(class="form-label") }}
-            {{ form.image(class="form-control-file") }}
-        </div>
-        <button type="submit" class="btn btn-primary">Edit</button>
-    </form>
-</div>
+    <div class="container">
+        <h2 class="my-4">Edit Student</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                {{ form.first_name.label(class="form-label") }}
+                {{ form.first_name(class="form-control", placeholder="First Name") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.last_name.label(class="form-label") }}
+                {{ form.last_name(class="form-control", placeholder="Last Name") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.patronymic.label(class="form-label") }}
+                {{ form.patronymic(class="form-control", placeholder="Patronymic") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control", placeholder="Email") }}
+                {% for error in form.email.errors %}
+                    <div class="text-danger small">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.course.label(class="form-label") }}
+                {{ form.course(class="form-control", placeholder="Course") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.profession.label(class="form-label") }}
+                {{ form.profession(class="form-control", placeholder="Profession") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.image.label(class="form-label") }}
+                {{ form.image(class="form-control") }}
+            </div>
+
+            {% if avatar_preview %}
+                <div class="mb-3">
+                    <label class="form-label">Current photo:</label><br>
+                    <img src="{{ url_for('static', filename='uploads/' + avatar_preview) }}" alt="avatar" width="120"
+                         style="border-radius: 6px;">
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary mb-5">Save Changes</button>
+        </form>
+    </div>
 {% endblock %}

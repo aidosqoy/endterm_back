@@ -7,6 +7,7 @@ from flask_login import login_required, current_user
 import os
 from werkzeug.utils import secure_filename
 from flask import current_app
+from app.utils.ocr import process_pdf_file
 
 students = Blueprint('students', __name__)
 
@@ -21,7 +22,9 @@ def list_students():
 
     if search:
         students_query = students_query.filter(
-            (Student.first_name.ilike(f'%{search}%')) | (Student.last_name.ilike(f'%{search}%'))
+            (Student.first_name.ilike(f'%{search}%')) |
+            (Student.last_name.ilike(f'%{search}%')) |
+            (Student.patronymic.ilike(f'%{search}%'))
         )
 
     students_paginated = students_query.paginate(page=page, per_page=5)
@@ -34,6 +37,8 @@ def list_students():
 @login_required
 def add_student():
     form = StudentForm()
+    extracted_image = request.form.get("extracted_image")
+    filename = None
 
     if form.validate_on_submit():
         existing_student = Student.query.filter_by(email=form.email.data).first()
@@ -55,9 +60,14 @@ def add_student():
 
             form.image.data.save(filepath)
 
+        elif extracted_image:
+            filename = extracted_image
+
         student = Student(
             first_name=form.first_name.data,
             last_name=form.last_name.data,
+            patronymic=form.patronymic.data,
+            profession=form.profession.data,
             course=form.course.data,
             email=form.email.data,
             image=filename if filename else None,
@@ -75,6 +85,7 @@ def add_student():
 
     return render_template('students/form.html', form=form)
 
+
 @students.route('/students/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_student(id):
@@ -84,13 +95,15 @@ def edit_student(id):
         flash("You don't have permission to edit this student.", "danger")
         return redirect(url_for('students.list_students'))
 
-    form = StudentForm(obj=student)
+    form = StudentForm(original_email=student.email, obj=student)
 
     if form.validate_on_submit():
         student.first_name = form.first_name.data
         student.last_name = form.last_name.data
         student.course = form.course.data
         student.email = form.email.data
+        student.profession = form.profession.data
+        student.patronymic = form.patronymic.data
 
         if form.image.data:
             filename = secure_filename(form.image.data.filename)
@@ -120,17 +133,38 @@ def delete_student(id):
     flash('Student deleted.', 'info')
     return redirect(url_for('students.list_students'))
 
+@students.route('/students/upload-pdf', methods=['POST'])
+@login_required
+def upload_pdf():
+    file = request.files.get('pdf_file')
+    if not file or not file.filename.endswith('.pdf'):
+        flash('Нужно загрузить PDF-файл.', 'danger')
+        return redirect(request.referrer)
+
+    try:
+        student_obj, prefill_data = process_pdf_file(file, current_user.id)
+
+        form = StudentForm(
+            first_name=prefill_data["first_name"],
+            last_name=prefill_data["last_name"],
+            patronymic=prefill_data["patronymic"],
+            course=prefill_data["course"],
+            profession=prefill_data["profession"],
+            created_at=prefill_data.get("created_at")
+        )
+
+        return render_template(
+            'students/form.html',
+            form=form,
+            avatar_preview=prefill_data["image"],
+            extracted_image_filename=prefill_data["image"],
+            prefill_mode=True
+        )
 
 
+    except Exception as e:
+        print("Ошибка при распознавании PDF:", e)
+        flash('Не удалось распознать PDF.', 'danger')
+        return redirect(url_for('students.list_students'))
 
-
-
-@students.route('/students/search')
-def search_students():
-    query = request.args.get('q')
-    if query:
-        results = Student.query.filter(Student.name.ilike(f"%{query}%")).all()
-    else:
-        results = []
-    return render_template('students/search_results.html', students=results)
 
